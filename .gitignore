@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Secrets / local env (only the .example is tracked)
+env/.env.*
+!env/.env.*.example
+server/.env
+
+# Build output
+appPackage/build/
+
+# OS
+.DS_Store

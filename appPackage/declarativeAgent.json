@@ -1,0 +1,45 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
+    "version": "v1.8",
+    "name": "Contoso Payroll${{APP_NAME_SUFFIX}}",
+    "description": "Process a pay period from your open timesheet — compute gross, taxes and deductions to net pay, run pre-flight compliance checks, and summarize employer taxes. From Contoso Payroll (a fictional payroll ISV). Illustrative demo, not tax advice.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "title": "Process my timesheet",
+            "text": "Process payroll from my open timesheet"
+        },
+        {
+            "title": "Check before I run",
+            "text": "Check this timesheet for issues before I run payroll"
+        },
+        {
+            "title": "Try a sample",
+            "text": "Show me a sample timesheet and process it"
+        },
+        {
+            "title": "Explain a paycheck",
+            "text": "Explain how net pay was calculated for one employee"
+        },
+        {
+            "title": "Employer taxes",
+            "text": "Summarize the employer taxes and what's due for this run"
+        }
+    ],
+    "agent_skills": [
+        {
+            "folder": "skills/payroll-variance-review"
+        }
+    ],
+    "capabilities": [
+        {
+            "name": "OneDriveAndSharePoint"
+        }
+    ],
+    "actions": [
+        {
+            "id": "contosoPayroll",
+            "file": "ai-plugin.json"
+        }
+    ]
+}

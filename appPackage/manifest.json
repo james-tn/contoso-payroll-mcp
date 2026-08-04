@@ -1,0 +1,40 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.29/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.29",
+    "version": "1.0.4",
+    "id": "${{TEAMS_APP_ID}}",
+    "developer": {
+        "name": "Contoso Payroll",
+        "websiteUrl": "https://www.example.com",
+        "privacyUrl": "https://www.example.com/privacy",
+        "termsOfUseUrl": "https://www.example.com/termsofuse"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "Contoso Payroll${{APP_NAME_SUFFIX}}",
+        "full": "Contoso Payroll Agent for Microsoft 365 Copilot"
+    },
+    "description": {
+        "short": "Process payroll from your open timesheet in Copilot.",
+        "full": "A declarative agent from Contoso Payroll (a fictional payroll ISV) that turns an open timesheet into a processed pay period \u2014 gross, taxes and deductions to net pay, pre-flight compliance checks, and employer tax summaries \u2014 powered by a custom, authenticated MCP server. Figures are illustrative, not tax advice."
+    },
+    "accentColor": "#0a7c42",
+    "supportsChannelFeatures": "tier1",
+    "composeExtensions": [],
+    "copilotAgents": {
+        "declarativeAgents": [
+            {
+                "id": "declarativeAgent",
+                "file": "declarativeAgent.json"
+            }
+        ]
+    },
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "validDomains": []
+}

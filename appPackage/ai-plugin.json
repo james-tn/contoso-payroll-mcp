@@ -1,0 +1,197 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+    "schema_version": "v2.4",
+    "name_for_human": "Contoso Payroll${{APP_NAME_SUFFIX}}",
+    "description_for_human": "Contoso Payroll for Microsoft 365 Copilot: process a pay period from your open timesheet \u2014 compute gross, taxes and deductions to net pay, run pre-flight compliance checks, and summarize employer taxes. Illustrative demo, not tax advice.",
+    "namespace": "contosopayroll",
+    "functions": [
+        {
+            "name": "get_sample_timesheet",
+            "description": "Return a realistic sample biweekly timesheet (employees with hours, rates, salaries, 401k, health, garnishment) plus the employer, so the demo runs without a real Excel file. Use when the user has no timesheet open and wants to try it, e.g. 'show a sample timesheet', 'give me example payroll data'."
+        },
+        {
+            "name": "process_payroll",
+            "description": "Run payroll for a pay period and return the full payroll register (per employee: gross, overtime, pre-tax deductions, federal/state/Social Security/Medicare withholding, post-tax deductions, net) plus totals and the funding amount. Pass 'employees' as an array of timesheet rows read from the user's OPEN EXCEL timesheet; each row: name, type ('hourly' or 'salary'), rate, hours, overtime_hours, annual_salary, bonus, retirement_pct, health_premium, garnishment, state. Optional 'frequency' (weekly/biweekly/semimonthly/monthly) and 'period_label'. If no rows are given, the sample timesheet is used. Use for 'process/run this payroll', 'run payroll from my timesheet'. Figures are illustrative, not tax advice."
+        },
+        {
+            "name": "check_payroll",
+            "description": "Pre-flight anomaly & compliance check on a timesheet BEFORE funding: flags missing hours or rates, sub-minimum-wage pay, excessive overtime/hours, zero or negative net pay, and duplicate employees, each with a severity. Pass 'employees' (same shape as process_payroll) or omit to reuse the last run's rows. Use for 'check this payroll', 'any issues before I run it', 'validate the timesheet'."
+        },
+        {
+            "name": "explain_paycheck",
+            "description": "Explain one employee's paycheck as a gross \u2192 pre-tax \u2192 taxes \u2192 post-tax \u2192 net breakdown. Pass 'employee' (a name); optionally 'employees' rows and 'frequency' (else the last run is used). Use for 'why is Maria's net so low', 'break down Diego's pay', 'explain <name>'s paycheck'."
+        },
+        {
+            "name": "tax_summary",
+            "description": "Summarize the employer tax picture for a run: employee withholding, employer-side taxes (Social Security, Medicare, FUTA, SUTA), total cash to deposit, total funding, and the filings it feeds (Form 941, FUTA/SUTA, W-2). Pass 'employees' or omit to reuse the last run. Use for 'what's my tax liability', 'how much do I owe / deposit', 'what filings are due'. Illustrative."
+        },
+        {
+            "name": "get_run_summary",
+            "description": "Recap the most recently processed payroll run (employer, frequency, employee count, gross, net, funding). Data only. Call this to stay grounded when the user refers to 'this run', 'the payroll', 'what I just processed'."
+        }
+    ],
+    "runtimes": [
+        {
+            "type": "RemoteMCPServer",
+            "spec": {
+                "url": "${{MCP_ENDPOINT_URL}}",
+                "x-mcp_tool_description": {
+                    "tools": [
+                        {
+                            "name": "get_sample_timesheet",
+                            "description": "Return a realistic sample biweekly timesheet (employees with hours, rates, salaries, 401k, health, garnishment) plus the employer, so the demo runs without a real Excel file. Use when the user has no timesheet open and wants to try it, e.g. 'show a sample timesheet', 'give me example payroll data'.",
+                            "inputSchema": {
+                                "properties": {},
+                                "title": "get_sample_timesheetArguments",
+                                "type": "object"
+                            },
+                            "annotations": {
+                                "readOnlyHint": true
+                            },
+                            "execution": {
+                                "taskSupport": "forbidden"
+                            }
+                        },
+                        {
+                            "name": "process_payroll",
+                            "description": "Run payroll for a pay period and return the full payroll register (per employee: gross, overtime, pre-tax deductions, federal/state/Social Security/Medicare withholding, post-tax deductions, net) plus totals and the funding amount. Pass 'employees' as an array of timesheet rows read from the user's OPEN EXCEL timesheet; each row: name, type ('hourly' or 'salary'), rate, hours, overtime_hours, annual_salary, bonus, retirement_pct, health_premium, garnishment, state. Optional 'frequency' (weekly/biweekly/semimonthly/monthly) and 'period_label'. If no rows are given, the sample timesheet is used. Use for 'process/run this payroll', 'run payroll from my timesheet'. Figures are illustrative, not tax advice.",
+                            "inputSchema": {
+                                "properties": {
+                                    "employees": {
+                                        "default": null,
+                                        "title": "Employees"
+                                    },
+                                    "frequency": {
+                                        "default": "",
+                                        "title": "Frequency",
+                                        "type": "string"
+                                    },
+                                    "period_label": {
+                                        "default": "",
+                                        "title": "Period Label",
+                                        "type": "string"
+                                    }
+                                },
+                                "title": "process_payrollArguments",
+                                "type": "object"
+                            },
+                            "annotations": {
+                                "readOnlyHint": true
+                            },
+                            "execution": {
+                                "taskSupport": "forbidden"
+                            }
+                        },
+                        {
+                            "name": "check_payroll",
+                            "description": "Pre-flight anomaly & compliance check on a timesheet BEFORE funding: flags missing hours or rates, sub-minimum-wage pay, excessive overtime/hours, zero or negative net pay, and duplicate employees, each with a severity. Pass 'employees' (same shape as process_payroll) or omit to reuse the last run's rows. Use for 'check this payroll', 'any issues before I run it', 'validate the timesheet'.",
+                            "inputSchema": {
+                                "properties": {
+                                    "employees": {
+                                        "default": null,
+                                        "title": "Employees"
+                                    },
+                                    "frequency": {
+                                        "default": "",
+                                        "title": "Frequency",
+                                        "type": "string"
+                                    }
+                                },
+                                "title": "check_payrollArguments",
+                                "type": "object"
+                            },
+                            "annotations": {
+                                "readOnlyHint": true
+                            },
+                            "execution": {
+                                "taskSupport": "forbidden"
+                            }
+                        },
+                        {
+                            "name": "explain_paycheck",
+                            "description": "Explain one employee's paycheck as a gross \u2192 pre-tax \u2192 taxes \u2192 post-tax \u2192 net breakdown. Pass 'employee' (a name); optionally 'employees' rows and 'frequency' (else the last run is used). Use for 'why is Maria's net so low', 'break down Diego's pay', 'explain <name>'s paycheck'.",
+                            "inputSchema": {
+                                "properties": {
+                                    "employee": {
+                                        "default": "",
+                                        "title": "Employee",
+                                        "type": "string"
+                                    },
+                                    "employees": {
+                                        "default": null,
+                                        "title": "Employees"
+                                    },
+                                    "frequency": {
+                                        "default": "",
+                                        "title": "Frequency",
+                                        "type": "string"
+                                    }
+                                },
+                                "title": "explain_paycheckArguments",
+                                "type": "object"
+                            },
+                            "annotations": {
+                                "readOnlyHint": true
+                            },
+                            "execution": {
+                                "taskSupport": "forbidden"
+                            }
+                        },
+                        {
+                            "name": "tax_summary",
+                            "description": "Summarize the employer tax picture for a run: employee withholding, employer-side taxes (Social Security, Medicare, FUTA, SUTA), total cash to deposit, total funding, and the filings it feeds (Form 941, FUTA/SUTA, W-2). Pass 'employees' or omit to reuse the last run. Use for 'what's my tax liability', 'how much do I owe / deposit', 'what filings are due'. Illustrative.",
+                            "inputSchema": {
+                                "properties": {
+                                    "employees": {
+                                        "default": null,
+                                        "title": "Employees"
+                                    },
+                                    "frequency": {
+                                        "default": "",
+                                        "title": "Frequency",
+                                        "type": "string"
+                                    }
+                                },
+                                "title": "tax_summaryArguments",
+                                "type": "object"
+                            },
+                            "annotations": {
+                                "readOnlyHint": true
+                            },
+                            "execution": {
+                                "taskSupport": "forbidden"
+                            }
+                        },
+                        {
+                            "name": "get_run_summary",
+                            "description": "Recap the most recently processed payroll run (employer, frequency, employee count, gross, net, funding). Data only. Call this to stay grounded when the user refers to 'this run', 'the payroll', 'what I just processed'.",
+                            "inputSchema": {
+                                "properties": {},
+                                "title": "get_run_summaryArguments",
+                                "type": "object"
+                            },
+                            "annotations": {
+                                "readOnlyHint": true
+                            },
+                            "execution": {
+                                "taskSupport": "forbidden"
+                            }
+                        }
+                    ]
+                }
+            },
+            "run_for_functions": [
+                "get_sample_timesheet",
+                "process_payroll",
+                "check_payroll",
+                "explain_paycheck",
+                "tax_summary",
+                "get_run_summary"
+            ],
+            "auth": {
+                "type": "OAuthPluginVault",
+                "reference_id": "${{OAUTH_REGISTRATION_ID}}"
+            }
+        }
+    ]
+}

@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://aka.ms/m365-agents-toolkit/v1.11/yaml.schema.json
+# Creates the OAuthPluginVault registration referenced by appPackage/ai-plugin.json.
+#
+# This example uses Microsoft Entra SSO so the MCP server receives an access token
+# for its own API. The Entra app, delegated access_as_user scope, identifier URI,
+# redirect URI, and Copilot pre-authorization must be configured first; see
+# docs/mcp-security.md.
+version: v1.11
+
+environmentFolderPath: ./env
+
+provision:
+  - uses: oauth/register
+    with:
+      name: Contoso Payroll MCP
+      flow: authorizationCode
+      appId: ${{TEAMS_APP_ID}}
+      clientId: ${{AAD_APP_CLIENT_ID}}
+      identityProvider: MicrosoftEntra
+      baseUrl: ${{MCP_BASE_URL}}
+
+      # Cross-tenant ISV distribution requires AnyTenant. Use HomeTenant only for
+      # an app that will never leave the development organization.
+      targetAudience: AnyTenant
+
+      # Bind the vault registration to the stable app ID in production. AnyApp is
+      # useful only while prototyping before the app ID is fixed.
+      applicableToApps: SpecificApp
+    writeToEnvironmentFile:
+      configurationId: OAUTH_REGISTRATION_ID
+      applicationIdUri: OAUTH_APPLICATION_ID_URI

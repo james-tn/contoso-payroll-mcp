@@ -1,0 +1,16 @@
+[project]
+name = "contoso-payroll-mcp"
+version = "0.1.0"
+description = "Contoso Payroll MCP server — payroll processing tools for a Microsoft 365 Copilot declarative agent."
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]==1.26.0",
+    "uvicorn>=0.29",
+    "starlette>=0.37",
+    "python-dotenv>=1.0",
+    "pydantic-settings>=2.0.0",
+    "PyJWT[crypto]>=2.10.1",
+]
+
+[tool.setuptools]
+packages = ["payroll_mcp"]
