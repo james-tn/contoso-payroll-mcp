@@ -18,5 +18,8 @@ server/.env
 # Build output
 appPackage/build/
 
+# Customer/support artifacts
+reference/
+
 # OS
 .DS_Store
